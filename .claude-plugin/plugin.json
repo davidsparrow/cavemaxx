@@ -1,0 +1,12 @@
+{
+  "name": "cavemaxx",
+  "description": "You already have the app builder. Turn it up. CaveMaxx teaches Claude to notice when an interface, diagram, calculator or mini-app would serve you better than prose. Modes: /cave-off, /cave-default, /cave-max.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Sparrow"
+  },
+  "homepage": "https://github.com/davidsparrow/cavemaxx",
+  "repository": "https://github.com/davidsparrow/cavemaxx",
+  "license": "MIT",
+  "keywords": ["claude-skill", "artifacts", "interfaces", "visualization", "dashboards", "mini-apps"]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "cavemaxx",
+  "owner": {
+    "name": "David Sparrow"
+  },
+  "metadata": {
+    "description": "CaveMaxx: you already have the app builder. Turn it up."
+  },
+  "plugins": [
+    {
+      "name": "cavemaxx",
+      "source": "./",
+      "description": "Teaches Claude to notice when an interface, diagram, calculator or mini-app would serve you better than prose. Modes: /cave-off, /cave-default, /cave-max.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "homepage": "https://github.com/davidsparrow/cavemaxx"
+    }
+  ]
+}
