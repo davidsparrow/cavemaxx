@@ -35,3 +35,11 @@ recap of the dashboard in prose.
 If the request had been *"which price would you pick and why?"* with no numbers, the choice
 would be less obvious and Claude might ask: *This could work better visually. Diagram ·
 Interactive Surface · Skip.*
+
+## A real output
+
+[`pricing-simulator.html`](pricing-simulator.html) is what Claude produced for the prompt above
+under `/cave-max` during testing: the three prices side by side, editable signup and churn
+guesses per price, a referral-versus-pipeline growth slider, a 12/24/36-month horizon, and a
+"how the numbers are computed" section. Open it in a browser. Your output will differ; the
+point is the shape of the answer, not this exact file.

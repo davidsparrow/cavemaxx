@@ -133,7 +133,8 @@ a scorecard. Same prompt, three modes, compare.
 SKILL.md              the skill: modes, decision framework, building rules
 README.md             this file
 INSTALL.md            install, verify, update, remove
-examples/             same prompt under each mode: pricing, comparison, diagram, reusable data
+examples/             same prompt under each mode: pricing, comparison, diagram, reusable data,
+                      plus one real generated pricing simulator
 evals/benchmark.md    the test prompt set and scorecard
 commands/             /cave-off, /cave-default, /cave-max as plugin slash commands
 .claude-plugin/       plugin.json and marketplace.json, so the folder installs as a plugin

@@ -1,0 +1,646 @@
+<title>Price Point Simulator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f3f4f0;
+    --surface: #fcfcfb;
+    --surface-2: #f5f6f2;
+    --ink: #141815;
+    --ink-2: #4e5652;
+    --muted: #7f8782;
+    --line: #dfe3dc;
+    --line-2: #c3c9c1;
+    --accent: #5c2f6e;
+    --accent-tint: #efe6f2;
+    --good-text: #006300;
+    --warn: #fab219;
+    --focus: #2a78d6;
+    --s1: #2a78d6;
+    --s2: #eb6834;
+    --s3: #1baf7a;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0f110f;
+      --surface: #1a1a19;
+      --surface-2: #222321;
+      --ink: #f3f4f1;
+      --ink-2: #c3c6bf;
+      --muted: #8e948f;
+      --line: #2c2f2b;
+      --line-2: #3d403c;
+      --accent: #cfa1dc;
+      --accent-tint: #2b2130;
+      --good-text: #0ca30c;
+      --warn: #fab219;
+      --focus: #3987e5;
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --grid: #2c2c2a;
+      --axis: #383835;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f110f;
+    --surface: #1a1a19;
+    --surface-2: #222321;
+    --ink: #f3f4f1;
+    --ink-2: #c3c6bf;
+    --muted: #8e948f;
+    --line: #2c2f2b;
+    --line-2: #3d403c;
+    --accent: #cfa1dc;
+    --accent-tint: #2b2130;
+    --good-text: #0ca30c;
+    --warn: #fab219;
+    --focus: #3987e5;
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --grid: #2c2c2a;
+    --axis: #383835;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; }
+
+  h1, h2 { font-family: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif; margin: 0; text-wrap: balance; }
+  h1 { font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+  h2 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .head { display: grid; gap: 8px; margin-bottom: 28px; }
+  .lede { margin: 0; color: var(--ink-2); max-width: 62ch; font-size: 15px; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  @media (min-width: 880px) {
+    .layout { grid-template-columns: 330px minmax(0, 1fr); gap: 40px; align-items: start; }
+  }
+
+  /* Controls */
+  .controls { display: grid; gap: 0; }
+  fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; padding-block: 18px; border-top: 1px solid var(--line); min-width: 0; }
+  fieldset:first-child { border-top: 0; padding-top: 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field label, .lbl { font-size: 12px; font-weight: 500; color: var(--ink-2); display: flex; justify-content: space-between; gap: 8px; }
+  .field label output { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  .inwrap { display: flex; align-items: center; height: 38px; padding: 0 10px; border: 1px solid var(--line-2); border-radius: 6px; background: var(--surface); min-width: 0; }
+  .inwrap input { border: 0; background: transparent; width: 100%; min-width: 0; font: inherit; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; outline: none; padding: 0; }
+  .inwrap input::-webkit-outer-spin-button, .inwrap input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .inwrap input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+  .inwrap .unit { color: var(--muted); font-size: 12px; margin-left: 6px; white-space: nowrap; }
+  .inwrap .unit.pre { margin-left: 0; margin-right: 4px; }
+  .inwrap:focus-within { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent); }
+  .hint { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  .seg { display: flex; border: 1px solid var(--line-2); border-radius: 6px; overflow: hidden; background: var(--surface); }
+  .seg button { flex: 1 1 0; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; color: var(--ink-2); min-height: 38px; padding: 6px 4px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--accent-tint); color: var(--accent); font-weight: 600; }
+  .seg button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  .tiers { display: grid; grid-template-columns: 1.15fr 1.25fr 1.05fr; gap: 6px 8px; align-items: center; }
+  .tiers .th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .tiers .inwrap { padding: 0 8px; }
+  .tiers .inwrap input { font-size: 14px; }
+  .key { display: inline-block; width: 14px; height: 2px; border-radius: 1px; vertical-align: middle; flex: none; }
+  .k1 { background: var(--s1); } .k2 { background: var(--s2); } .k3 { background: var(--s3); }
+  .tiers .key { margin-right: 6px; }
+
+  input[type=range] { width: 100%; margin: 6px 0 2px; accent-color: var(--accent); height: 28px; }
+  input[type=range]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+
+  /* Results */
+  .results { display: grid; gap: 22px; min-width: 0; }
+  .verdict { display: grid; gap: 6px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .hero { font-size: 44px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
+  .hero .per { font-size: 18px; font-weight: 500; color: var(--ink-2); margin-left: 4px; letter-spacing: 0; }
+  .hero .at { font-size: 18px; font-weight: 500; color: var(--ink-2); letter-spacing: 0; }
+  .vline { margin: 2px 0 0; color: var(--ink-2); }
+  .close { margin: 4px 0 0; display: flex; gap: 8px; align-items: flex-start; color: var(--ink-2); font-size: 13px; }
+  .close svg { flex: none; margin-top: 2px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 600px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 12px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+  .tile.best { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .tile .thead { display: flex; align-items: center; gap: 8px; }
+  .tile .price { font-weight: 600; font-size: 15px; }
+  .tile .price small { font-weight: 400; color: var(--muted); font-size: 12px; }
+  .chip { margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; }
+  .tile .val { font-size: 24px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
+  .tile .val small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 3px; letter-spacing: 0; }
+  .tile .delta { font-size: 13px; color: var(--ink-2); }
+  .tile .delta.up { color: var(--good-text); font-weight: 500; }
+  .tile dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 5px 10px; font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .tile dt { color: var(--muted); }
+  .tile dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+  .cardhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  #chart { position: relative; min-width: 0; }
+  .plot { display: block; max-width: 100%; overflow: visible; }
+  .plot .grid { stroke: var(--grid); stroke-width: 1; }
+  .plot .axis { stroke: var(--axis); stroke-width: 1; }
+  .plot .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .plot .dot { stroke: var(--surface); stroke-width: 2; }
+  .plot text { fill: var(--ink-2); font-size: 11px; font-family: inherit; }
+  .plot .endlab { fill: var(--ink); font-size: 12px; font-weight: 500; }
+  .plot .leader, .plot .crossline { stroke: var(--axis); stroke-width: 1; }
+  .plot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  .tip { position: absolute; top: 0; left: 0; background: var(--surface); border: 1px solid var(--line-2); border-radius: 6px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); pointer-events: none; display: grid; gap: 4px; white-space: nowrap; z-index: 2; }
+  .tip .tt { font-weight: 600; color: var(--ink-2); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .tip .row { display: flex; align-items: center; gap: 8px; }
+  .tip .row b { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 62px; }
+  .tip .row span:last-child { color: var(--muted); }
+
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-family: inherit; font-size: 13px; color: var(--ink); line-height: 1.4; }
+  th, td { padding: 7px 10px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { font-weight: 600; color: var(--ink-2); font-size: 12px; }
+  th:first-child, td:first-child { text-align: left; }
+  th .key { margin-right: 6px; }
+  tr.total td { font-weight: 600; border-bottom: 0; background: var(--surface-2); }
+
+  .notes { color: var(--ink-2); font-size: 13px; }
+  .notes summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+  .notes summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+  .notes ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 6px; max-width: 70ch; }
+  .notes code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="app">
+  <header class="head">
+    <h1>Price Point Simulator</h1>
+    <p class="lede">Three candidate prices, one set of assumptions you can change. Every figure is computed from the inputs; the two things nobody knows for sure, how many signups a higher price costs you and whether your growth compounds, are the sliders.</p>
+  </header>
+
+  <div class="layout">
+    <section class="controls" aria-label="Inputs">
+      <fieldset>
+        <h2>Your numbers today</h2>
+        <div class="grid2">
+          <div class="field"><label for="customers">Customers</label><div class="inwrap"><input id="customers" type="number" min="1" step="1" value="400" inputmode="numeric"></div></div>
+          <div class="field"><label for="current">Price they pay</label><div class="inwrap"><span class="unit pre">$</span><input id="current" type="number" min="1" step="1" value="29" inputmode="decimal"><span class="unit">/mo</span></div></div>
+          <div class="field"><label for="growth">Net growth</label><div class="inwrap"><input id="growth" type="number" min="-50" max="100" step="0.5" value="8" inputmode="decimal"><span class="unit">%/mo</span></div></div>
+          <div class="field"><label for="churn">Churn</label><div class="inwrap"><input id="churn" type="number" min="0" max="50" step="0.1" value="4" inputmode="decimal"><span class="unit">%/mo</span></div></div>
+        </div>
+        <p class="hint">Today's price is assumed to be $29; change it if not. Growth plus churn implies <span id="adds0">48</span> new signups a month right now.</p>
+      </fieldset>
+
+      <fieldset>
+        <h2>Candidate prices</h2>
+        <div class="tiers" id="tiers">
+          <div class="th">Price</div><div class="th">Signups vs today</div><div class="th">Churn</div>
+          <div class="inwrap"><span class="key k1"></span><span class="unit pre">$</span><input id="p0" type="number" min="1" step="1" value="29" aria-label="Price 1" inputmode="decimal"></div>
+          <div class="inwrap"><input id="s0" type="number" min="0" step="1" value="100" aria-label="Signups vs today for price 1" inputmode="decimal"><span class="unit">%</span></div>
+          <div class="inwrap"><input id="c0" type="number" min="0" max="100" step="0.1" value="4" aria-label="Monthly churn for price 1" inputmode="decimal"><span class="unit">%</span></div>
+          <div class="inwrap"><span class="key k2"></span><span class="unit pre">$</span><input id="p1" type="number" min="1" step="1" value="49" aria-label="Price 2" inputmode="decimal"></div>
+          <div class="inwrap"><input id="s1" type="number" min="0" step="1" value="73" aria-label="Signups vs today for price 2" inputmode="decimal"><span class="unit">%</span></div>
+          <div class="inwrap"><input id="c1" type="number" min="0" max="100" step="0.1" value="4.6" aria-label="Monthly churn for price 2" inputmode="decimal"><span class="unit">%</span></div>
+          <div class="inwrap"><span class="key k3"></span><span class="unit pre">$</span><input id="p2" type="number" min="1" step="1" value="79" aria-label="Price 3" inputmode="decimal"></div>
+          <div class="inwrap"><input id="s2" type="number" min="0" step="1" value="55" aria-label="Signups vs today for price 3" inputmode="decimal"><span class="unit">%</span></div>
+          <div class="inwrap"><input id="c2" type="number" min="0" max="100" step="0.1" value="5.1" aria-label="Monthly churn for price 3" inputmode="decimal"><span class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <span class="lbl" id="presetLbl">Fill from price sensitivity</span>
+          <div class="seg" id="presets" role="group" aria-labelledby="presetLbl">
+            <button type="button" data-value="low" aria-pressed="false">Low</button>
+            <button type="button" data-value="medium" aria-pressed="true">Medium</button>
+            <button type="button" data-value="high" aria-pressed="false">High</button>
+          </div>
+        </div>
+        <p class="hint">Presets fill both columns from each price's ratio to today's price. Overwrite any cell with your own guess; the break-even figures tell you how wrong you can afford to be.</p>
+      </fieldset>
+
+      <fieldset>
+        <h2>How you grow</h2>
+        <div class="field">
+          <label for="share">Signups that come from your customer base <output for="share" id="shareOut">30%</output></label>
+          <input type="range" id="share" min="0" max="100" step="5" value="30">
+          <p class="hint">0% means you feed the pipeline yourself (ads, outbound, content) and signups stay roughly flat. 100% means growth compounds off referrals from existing customers, so fewer signups today also means fewer tomorrow.</p>
+        </div>
+        <div class="field">
+          <span class="lbl" id="horizonLbl">Horizon</span>
+          <div class="seg" id="horizon" role="group" aria-labelledby="horizonLbl">
+            <button type="button" data-value="12" aria-pressed="false">12 months</button>
+            <button type="button" data-value="24" aria-pressed="true">24 months</button>
+            <button type="button" data-value="36" aria-pressed="false">36 months</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <h2>Existing customers</h2>
+        <div class="seg" id="keep" role="group" aria-label="Existing customers">
+          <button type="button" data-value="keep" aria-pressed="true">Keep at today's price</button>
+          <button type="button" data-value="move" aria-pressed="false">Move to the new price</button>
+        </div>
+        <div class="field" id="moveField" hidden>
+          <label for="moveChurn">One-off churn from the move</label>
+          <div class="inwrap"><input id="moveChurn" type="number" min="0" max="100" step="1" value="5" inputmode="decimal"><span class="unit">% of existing customers</span></div>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="results" aria-label="Results" aria-live="polite">
+      <div class="verdict">
+        <div class="eyebrow" id="vEyebrow">Most MRR at month 24</div>
+        <div class="hero" id="vHero"></div>
+        <p class="vline" id="vLine"></p>
+        <p class="close" id="vClose" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 15 14H1L8 1.5Z" fill="var(--warn)"/><path d="M8 6v4M8 11.5v1" stroke="#141815" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span id="vCloseText"></span>
+        </p>
+      </div>
+
+      <div class="tiles" id="tiles"></div>
+
+      <div class="card">
+        <div class="cardhead"><h2>MRR by month</h2><div class="legend" id="legend" aria-label="Series"></div></div>
+        <div id="chart"></div>
+      </div>
+
+      <div class="card">
+        <h2>The same numbers as a table</h2>
+        <div class="tablewrap"><table id="table"></table></div>
+      </div>
+
+      <details class="notes">
+        <summary>How the numbers are computed</summary>
+        <ul>
+          <li>Signups today <code>= customers × (growth + churn)</code>. With 400, 8% and 4% that is 48 a month.</li>
+          <li>Each month at price P: <code>signups = signups% × [ (1 − share) × 48 + share × 12% × current customers ]</code>. The share slider blends a flat pipeline with compounding growth.</li>
+          <li>New-price customers: <code>N(t) = N(t−1) × (1 − churn_P) + signups</code>. Existing customers: <code>L(t) = L(t−1) × (1 − churn)</code> at today's price if kept; if moved, they pay P from month 1, churn at churn_P, and the one-off churn is taken in month 1.</li>
+          <li><code>MRR(t) = L(t) × price_L + N(t) × P</code>. ARR run-rate is MRR × 12. Revenue over the horizon sums MRR from month 1 to the last month.</li>
+          <li>Lifetime value <code>= P ÷ monthly churn</code>, revenue only, before gross margin and acquisition cost.</li>
+          <li>Break-even is the lowest signups% at which price P's MRR at the last month equals staying at today's price with today's signups and churn.</li>
+          <li>Presets set <code>signups% = (P ÷ today's price)^−e</code> and <code>churn = today's churn × (P ÷ today's price)^c</code>. Low: e 0.3, c 0.1. Medium: e 0.6, c 0.25. High: e 1.0, c 0.4. Constant elasticity is generous to big jumps; real demand curves usually have a cliff somewhere.</li>
+        </ul>
+      </details>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const PRESETS = { low: { e: 0.3, c: 0.10 }, medium: { e: 0.6, c: 0.25 }, high: { e: 1.0, c: 0.40 } };
+
+  const state = {
+    customers: 400, current: 29, growth: 8, churn: 4, horizon: 24, share: 30, keep: true, moveChurn: 5,
+    tiers: [
+      { price: 29, signups: 100, churn: 4 },
+      { price: 49, signups: 73, churn: 4.6 },
+      { price: 79, signups: 55, churn: 5.1 }
+    ]
+  };
+  let lastResults = null;
+  let lastChartWidth = 0;
+
+  /* ---------- formatting ---------- */
+  const money = (p) => '$' + (Number.isInteger(p) ? p.toLocaleString('en-US') : p.toFixed(2));
+  const fmt$ = (n) => (n < 0 ? '−' : '') + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const trim = (n, d) => String(parseFloat(n.toFixed(d)));
+  const compact$ = (n) => {
+    const a = Math.abs(n), s = n < 0 ? '−' : '';
+    if (a >= 1e6) return s + '$' + trim(a / 1e6, 2) + 'M';
+    if (a >= 1e3) return s + '$' + trim(a / 1e3, 1) + 'k';
+    return s + '$' + Math.round(a);
+  };
+  const tick$ = (n) => {
+    if (n >= 1e6) return '$' + trim(n / 1e6, 2) + 'M';
+    if (n >= 1e3) return '$' + trim(n / 1e3, 1) + 'k';
+    return '$' + Math.round(n);
+  };
+  const pct = (n, d) => trim(n, d === undefined ? 1 : d) + '%';
+  const int = (n) => Math.round(n).toLocaleString('en-US');
+
+  /* ---------- state ---------- */
+  function num(id, fallback) { const v = parseFloat($(id).value); return Number.isFinite(v) ? v : fallback; }
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+  function readState() {
+    state.customers = clamp(num('customers', state.customers), 0, 1e9);
+    state.current = clamp(num('current', state.current), 0.01, 1e6);
+    state.growth = clamp(num('growth', state.growth), -50, 100);
+    state.churn = clamp(num('churn', state.churn), 0, 100);
+    state.share = clamp(num('share', state.share), 0, 100);
+    state.moveChurn = clamp(num('moveChurn', state.moveChurn), 0, 100);
+    state.tiers.forEach((t, i) => {
+      t.price = clamp(num('p' + i, t.price), 0.01, 1e6);
+      t.signups = clamp(num('s' + i, t.signups), 0, 1000);
+      t.churn = clamp(num('c' + i, t.churn), 0, 100);
+    });
+  }
+
+  function setPressed(groupId, value) {
+    $(groupId).querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.value === value ? 'true' : 'false'));
+  }
+
+  function applyPreset(name) {
+    readState();
+    const { e, c } = PRESETS[name];
+    state.tiers.forEach((t, i) => {
+      const r = t.price / state.current;
+      t.signups = Math.round(100 * Math.pow(r, -e));
+      t.churn = Math.round(state.churn * Math.pow(r, c) * 10) / 10;
+      $('s' + i).value = t.signups;
+      $('c' + i).value = t.churn;
+    });
+    setPressed('presets', name);
+  }
+
+  /* ---------- model ---------- */
+  function simulate(tier) {
+    const T = state.horizon;
+    const churn0 = state.churn / 100, growth0 = state.growth / 100;
+    const addRate = Math.max(0, growth0 + churn0);
+    const adds0 = addRate * state.customers;
+    const share = state.share / 100;
+    const m = tier.signups / 100, churnP = tier.churn / 100;
+    const moving = !state.keep && Math.abs(tier.price - state.current) > 1e-9;
+    const legacyPrice = moving ? tier.price : state.current;
+    const legacyChurn = moving ? churnP : churn0;
+    let legacy = state.customers, fresh = 0, cum = 0;
+    const series = [{ t: 0, legacy, fresh, mrr: legacy * state.current }];
+    for (let t = 1; t <= T; t++) {
+      const adds = m * ((1 - share) * adds0 + share * addRate * (legacy + fresh));
+      if (moving && t === 1) legacy *= (1 - state.moveChurn / 100);
+      legacy *= (1 - legacyChurn);
+      fresh = fresh * (1 - churnP) + adds;
+      const mrr = legacy * legacyPrice + fresh * tier.price;
+      cum += mrr;
+      series.push({ t, legacy, fresh, mrr });
+    }
+    const last = series[T];
+    return { tier, series, mrrT: last.mrr, custT: last.legacy + last.fresh, cum, ltv: churnP > 0 ? tier.price / churnP : Infinity };
+  }
+
+  function breakeven(tier, refMRR) {
+    if (Math.abs(tier.price - state.current) < 1e-9) return null;
+    const f = (s) => simulate({ price: tier.price, signups: s, churn: tier.churn }).mrrT - refMRR;
+    if (f(0) >= 0) return 0;
+    if (f(1000) < 0) return Infinity;
+    let lo = 0, hi = 1000;
+    for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (f(mid) < 0) lo = mid; else hi = mid; }
+    return (lo + hi) / 2;
+  }
+
+  /* ---------- DOM helpers ---------- */
+  const SVG = 'http://www.w3.org/2000/svg';
+  function mk(tag, attrs) { const el = document.createElementNS(SVG, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); return el; }
+  function txt(x, y, s, cls, anchor) { const t = mk('text', { x, y, class: cls, 'text-anchor': anchor }); t.textContent = s; return t; }
+  function h(tag, cls, text) { const el = document.createElement(tag); if (cls) el.className = cls; if (text !== undefined) el.textContent = text; return el; }
+  function key(i) { return h('span', 'key k' + (i + 1)); }
+
+  /* ---------- render ---------- */
+  function render() {
+    readState();
+    const T = state.horizon;
+    const results = state.tiers.map(simulate);
+    lastResults = results;
+    const ref = simulate({ price: state.current, signups: 100, churn: state.churn });
+    const ranked = results.map((r, i) => ({ r, i })).sort((a, b) => b.r.mrrT - a.r.mrrT);
+    const best = ranked[0].r, second = ranked[1].r;
+
+    $('adds0').textContent = int(Math.max(0, (state.growth + state.churn) / 100 * state.customers));
+    $('shareOut').textContent = pct(state.share, 0);
+
+    // Verdict
+    $('vEyebrow').textContent = 'Most MRR at month ' + T + ' · ' + money(best.tier.price) + ' a month';
+    const hero = $('vHero');
+    hero.textContent = '';
+    hero.appendChild(document.createTextNode(fmt$(best.mrrT)));
+    hero.appendChild(h('span', 'per', '/mo'));
+    hero.appendChild(document.createTextNode(' '));
+    hero.appendChild(h('span', 'at', 'from ' + int(best.custT) + ' customers'));
+    const others = ranked.slice(1).map(({ r }) => money(r.tier.price) + ' lands ' + fmt$(best.mrrT - r.mrrT) + '/mo behind');
+    $('vLine').textContent = others.join(' · ') + '. Today: ' + fmt$(state.customers * state.current) + '/mo.';
+    const gap = best.mrrT > 0 ? (best.mrrT - second.mrrT) / best.mrrT : 0;
+    const closeCall = gap < 0.1;
+    $('vClose').hidden = !closeCall;
+    if (closeCall) {
+      $('vCloseText').textContent = 'Close call: ' + money(best.tier.price) + ' and ' + money(second.tier.price) + ' are within ' + pct(gap * 100, 1) + ' of each other. That is inside the error of your signups guess, so treat them as tied and pick on break-even margin and positioning instead.';
+    }
+
+    // Tiles
+    const tiles = $('tiles');
+    tiles.textContent = '';
+    results.forEach((r, i) => {
+      const isBest = r === best;
+      const isRef = Math.abs(r.tier.price - state.current) < 1e-9;
+      const tile = h('div', 'tile' + (isBest ? ' best' : ''));
+      const head = h('div', 'thead');
+      head.appendChild(key(i));
+      const price = h('span', 'price', money(r.tier.price) + ' ');
+      price.appendChild(h('small', '', '/mo' + (isRef ? ' · today’s price' : '')));
+      head.appendChild(price);
+      if (isBest) head.appendChild(h('span', 'chip', 'Best'));
+      tile.appendChild(head);
+      const val = h('div', 'val', fmt$(r.mrrT));
+      val.appendChild(h('small', '', 'MRR at month ' + T));
+      tile.appendChild(val);
+      const d = r.mrrT - ref.mrrT;
+      let delta;
+      if (isRef && r.tier.signups === 100 && Math.abs(r.tier.churn - state.churn) < 1e-9) delta = h('div', 'delta', 'The do-nothing baseline');
+      else if (d >= 0) delta = h('div', 'delta up', '▲ ' + fmt$(d) + '/mo vs staying at ' + money(state.current));
+      else delta = h('div', 'delta', '▼ ' + fmt$(-d) + '/mo vs staying at ' + money(state.current));
+      tile.appendChild(delta);
+      const dl = h('dl');
+      const be = breakeven(r.tier, ref.mrrT);
+      let beText;
+      if (be === null) beText = '—';
+      else if (be === 0) beText = 'Wins at any signup rate';
+      else if (be === Infinity) beText = 'Never beats ' + money(state.current) + ' at this churn';
+      else beText = 'Keep ≥ ' + Math.round(be) + '% of signups';
+      const rows = [
+        ['Customers', int(r.custT)],
+        ['ARR run-rate', fmt$(r.mrrT * 12)],
+        ['Revenue, ' + T + ' months', fmt$(r.cum)],
+        ['Lifetime value', r.ltv === Infinity ? '∞' : fmt$(r.ltv)],
+        ['Break-even', beText]
+      ];
+      rows.forEach(([k, v]) => { dl.appendChild(h('dt', '', k)); dl.appendChild(h('dd', '', v)); });
+      tile.appendChild(dl);
+      tiles.appendChild(tile);
+    });
+
+    // Legend
+    const legend = $('legend');
+    legend.textContent = '';
+    results.forEach((r, i) => { const s = h('span'); s.appendChild(key(i)); s.appendChild(document.createTextNode(money(r.tier.price) + '/mo')); legend.appendChild(s); });
+
+    drawChart(results);
+    drawTable(results);
+  }
+
+  function niceScale(max, n) {
+    const raw = max / n;
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const f = raw / p;
+    const nf = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10;
+    const step = nf * p;
+    return { step, top: Math.ceil(max / step - 1e-9) * step };
+  }
+
+  function drawChart(results) {
+    const host = $('chart');
+    host.textContent = '';
+    const T = state.horizon;
+    const W = Math.max(280, Math.floor(host.clientWidth || 640));
+    lastChartWidth = W;
+    const narrow = W < 560;
+    const H = narrow ? 240 : 300;
+    const M = { top: 16, right: narrow ? 18 : 112, bottom: 30, left: 54 };
+    const iw = W - M.left - M.right, ih = H - M.top - M.bottom;
+    let maxV = 0;
+    results.forEach((r) => r.series.forEach((p) => { if (p.mrr > maxV) maxV = p.mrr; }));
+    if (maxV <= 0) maxV = 1;
+    const sc = niceScale(maxV, narrow ? 3 : 4);
+    const x = (t) => M.left + (t / T) * iw;
+    const y = (v) => M.top + ih - (v / sc.top) * ih;
+
+    const svg = mk('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, class: 'plot', tabindex: '0', role: 'img',
+      'aria-label': 'Monthly recurring revenue by month for ' + results.map((r) => money(r.tier.price)).join(', ') + '. Use left and right arrow keys to read values.' });
+
+    for (let v = 0; v <= sc.top + 1e-6; v += sc.step) {
+      svg.appendChild(mk('line', { x1: M.left, x2: M.left + iw, y1: y(v), y2: y(v), class: v === 0 ? 'axis' : 'grid' }));
+      svg.appendChild(txt(M.left - 8, y(v) + 4, tick$(v), 'ylab', 'end'));
+    }
+    const xs = T <= 12 ? 3 : 6;
+    for (let t = 0; t <= T; t += xs) svg.appendChild(txt(x(t), M.top + ih + 20, t === 0 ? 'Today' : 'M' + t, 'xlab', 'middle'));
+
+    results.forEach((r, i) => {
+      const d = r.series.map((p, j) => (j ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.mrr).toFixed(1)).join('');
+      svg.appendChild(mk('path', { d, class: 'line', stroke: 'var(--s' + (i + 1) + ')' }));
+    });
+
+    // End labels with leader lines when they would collide
+    if (!narrow) {
+      const ends = results.map((r, i) => ({ i, yy: y(r.mrrT), ly: y(r.mrrT), label: money(r.tier.price) + ' · ' + compact$(r.mrrT) }));
+      const sorted = [...ends].sort((a, b) => a.yy - b.yy);
+      const gapPx = 15;
+      for (let k = 1; k < sorted.length; k++) if (sorted[k].ly - sorted[k - 1].ly < gapPx) sorted[k].ly = sorted[k - 1].ly + gapPx;
+      const over = sorted[sorted.length - 1].ly - (M.top + ih);
+      if (over > 0) sorted.forEach((e) => { e.ly -= over; });
+      ends.forEach((e) => {
+        if (Math.abs(e.ly - e.yy) > 2) svg.appendChild(mk('line', { x1: x(T) + 5, y1: e.yy, x2: x(T) + 10, y2: e.ly, class: 'leader' }));
+        svg.appendChild(txt(x(T) + 13, e.ly + 4, e.label, 'endlab', 'start'));
+      });
+    }
+    results.forEach((r, i) => svg.appendChild(mk('circle', { cx: x(T), cy: y(r.mrrT), r: 4.5, class: 'dot', fill: 'var(--s' + (i + 1) + ')' })));
+
+    // Crosshair + tooltip
+    const cross = mk('g', { visibility: 'hidden' });
+    const cl = mk('line', { y1: M.top, y2: M.top + ih, x1: x(T), x2: x(T), class: 'crossline' });
+    cross.appendChild(cl);
+    const cds = results.map((r, i) => { const c = mk('circle', { r: 4.5, class: 'dot', fill: 'var(--s' + (i + 1) + ')', cx: x(T), cy: y(r.mrrT) }); cross.appendChild(c); return c; });
+    svg.appendChild(cross);
+    svg.appendChild(mk('rect', { x: M.left, y: M.top, width: iw, height: ih, fill: 'transparent' }));
+    host.appendChild(svg);
+
+    const tip = h('div', 'tip');
+    tip.hidden = true;
+    host.appendChild(tip);
+    let cur = T;
+
+    function show(t) {
+      cur = t;
+      cross.setAttribute('visibility', 'visible');
+      cl.setAttribute('x1', x(t)); cl.setAttribute('x2', x(t));
+      cds.forEach((c, i) => { c.setAttribute('cx', x(t)); c.setAttribute('cy', y(results[i].series[t].mrr)); });
+      tip.textContent = '';
+      tip.appendChild(h('div', 'tt', t === 0 ? 'Today' : 'Month ' + t));
+      results.forEach((r, i) => {
+        const row = h('div', 'row');
+        row.appendChild(key(i));
+        row.appendChild(h('b', '', fmt$(r.series[t].mrr)));
+        row.appendChild(h('span', '', money(r.tier.price) + ' · ' + int(r.series[t].legacy + r.series[t].fresh) + ' customers'));
+        tip.appendChild(row);
+      });
+      tip.hidden = false;
+      const tw = tip.offsetWidth;
+      let left = x(t) + 14;
+      if (left + tw > W - 4) left = x(t) - 14 - tw;
+      if (left < 0) left = 4;
+      tip.style.left = left + 'px';
+      tip.style.top = M.top + 'px';
+    }
+    function hide() { cross.setAttribute('visibility', 'hidden'); tip.hidden = true; }
+
+    svg.addEventListener('pointermove', (e) => {
+      const rect = svg.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      show(Math.round(clamp((px - M.left) / iw, 0, 1) * T));
+    });
+    svg.addEventListener('pointerleave', hide);
+    svg.addEventListener('focus', () => show(cur));
+    svg.addEventListener('blur', hide);
+    svg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { show(Math.max(0, cur - 1)); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { show(Math.min(T, cur + 1)); e.preventDefault(); }
+    });
+  }
+
+  function drawTable(results) {
+    const table = $('table');
+    table.textContent = '';
+    const T = state.horizon;
+    const thead = h('thead'); const hr = h('tr');
+    hr.appendChild(h('th', '', 'MRR'));
+    results.forEach((r, i) => { const th = h('th'); th.appendChild(key(i)); th.appendChild(document.createTextNode(money(r.tier.price) + '/mo')); hr.appendChild(th); });
+    thead.appendChild(hr); table.appendChild(thead);
+    const tbody = h('tbody');
+    const step = T <= 12 ? 2 : 3;
+    for (let t = 0; t <= T; t += step) {
+      const tr = h('tr');
+      tr.appendChild(h('td', '', t === 0 ? 'Today' : 'Month ' + t));
+      results.forEach((r) => tr.appendChild(h('td', '', fmt$(r.series[t].mrr))));
+      tbody.appendChild(tr);
+    }
+    const tr = h('tr', 'total');
+    tr.appendChild(h('td', '', 'Customers at month ' + T));
+    results.forEach((r) => tr.appendChild(h('td', '', int(r.custT))));
+    tbody.appendChild(tr);
+    table.appendChild(tbody);
+  }
+
+  /* ---------- wiring ---------- */
+  ['customers', 'growth', 'moveChurn', 'share'].forEach((id) => $(id).addEventListener('input', render));
+  ['current', 'churn'].forEach((id) => $(id).addEventListener('input', () => { setPressed('presets', ''); render(); }));
+  ['p0', 'p1', 'p2', 's0', 's1', 's2', 'c0', 'c1', 'c2'].forEach((id) => $(id).addEventListener('input', () => { setPressed('presets', ''); render(); }));
+  $('presets').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; applyPreset(b.dataset.value); render(); });
+  $('horizon').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.horizon = parseInt(b.dataset.value, 10); setPressed('horizon', b.dataset.value); render(); });
+  $('keep').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.keep = b.dataset.value === 'keep'; setPressed('keep', b.dataset.value); $('moveField').hidden = state.keep; render(); });
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => { const w = Math.floor($('chart').clientWidth); if (lastResults && w && w !== lastChartWidth) drawChart(lastResults); }).observe($('chart'));
+  } else {
+    window.addEventListener('resize', () => { if (lastResults) drawChart(lastResults); });
+  }
+
+  applyPreset('medium');
+  render();
+})();
+</script>
