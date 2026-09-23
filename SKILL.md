@@ -177,21 +177,26 @@ What keeps this useful rather than noisy:
   of the artifact as a "For you" section: one card per item, a header strip, the why line
   underneath, and suggested replies as chips where the answer is obvious. Clean and modern,
   like the rest of the artifact.
-- **The card header** is where the contrast lives. Inline the bone from `assets/bone.svg` (a
-  solid silhouette filled with `currentColor`) and draw it big: about one and a half times
-  the strip's height, anchored to the strip's left edge, tilted about 6 degrees so its right
-  end rises, with the strip clipping its ends (`overflow: hidden`). Its width is two and a
-  half times its height, so start the title to the right of that. Then the title, TO-DO or
-  QUESTION in caps, and the "n of m" count at the far right.
-- **Bones on.** If the user says *bones on*, the card titles become hand-drawn bone lettering
-  for the rest of the conversation: `assets/title-todo.svg` reads TO-DO and
-  `assets/title-question.svg` reads HUH?. Read each file once and paste its contents into the
-  header verbatim (about 12 KB each; they carry clip paths that shape the letters, so don't
-  trim them). They are filled with `currentColor`: give the strip a dark background, set its
-  `color` to bone white, and give the SVG a height of about 40 to 56 px with width auto. Keep
-  the "n of m" count as text, since HUH? doesn't say how many questions there are. *Bones off*
-  returns to the plain header. Off is the default because a deliverable someone pastes into a
-  board deck should not arrive wearing a costume unless they asked for one.
+- **The card header** is where the contrast lives, and it is on by default. Two colour
+  schemes: TO-DO gets a burnt-orange strip (about `#b45309`) with white on it; QUESTION gets
+  a warm beige strip (about `#e9dcc3`) with dark brown (about `#5b3a1e`) on it. Everything on
+  the strip is drawn in `currentColor`, so those two colours do all the work. The strip is
+  about 56 px tall, `overflow: hidden`, and holds three things:
+  1. The big bone from `assets/bone.svg` (a solid silhouette), about one and a half times
+     the strip height, anchored to the left edge, tilted about 6 degrees so its right end
+     rises, clipped by the strip. Its width is two and a half times its height.
+  2. The title in hand-drawn bone lettering, to the right of the bone: `assets/title-todo.svg`
+     reads TO-DO and `assets/title-question.svg` reads HUH?. Read each file once and paste
+     its contents into the header verbatim (about 12 KB each; they carry clip paths that
+     shape the letters, so don't trim them). Height about 36 px, width auto.
+  3. The "n of m" count as text at the far right, since HUH? doesn't say how many questions
+     there are.
+  On narrow screens (under about 600 px) the three don't fit on one line, so either drop the
+  big bone or fade it to about 20% opacity and let the lettering sit over it; the count must
+  stay on the title's line.
+- **Bones off.** If the user says *bones off*, the strips keep their colours but the titles
+  become plain text (TO-DO, QUESTION, small caps, letter-spaced) and the bone artwork goes.
+  *Bones on* brings it back. The setting lasts for the conversation.
 
 ### Reusable interfaces and private data
 
@@ -305,10 +310,11 @@ longer than 38 characters so phones don't scroll sideways:
 └──────────────────────────────────┘
 ```
 
-In an artifact, cave-wall cards: charcoal outline, a dark charcoal header strip, and the title
-in bone lettering exactly as described under *Bones on* in the `/cave-max` section. Here it
-is always on; nobody has to ask. If a title file is missing, fall back to TO-DO or QUESTION
-in a hand-drawn display face with the big tilted bone from `assets/bone.svg` behind it.
+In an artifact, cave-wall cards built exactly like the `/cave-max` card header (big tilted
+bone, bone lettering, count), but in the cave palette: a dark charcoal strip with bone white
+on it for both kinds, a charcoal outline around the card, and the why line in the hand-drawn
+face. *Bones off* is ignored here; the wall is the wall. If a title file is missing, fall
+back to TO-DO or QUESTION in a hand-drawn display face.
 
 ### What stays civilised
 

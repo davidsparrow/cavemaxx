@@ -107,8 +107,8 @@ the end of the reply, one per item, at most three of each, and only when they ar
 > *This one assumption flips the answer between $29 and $49.*
 
 When the answer is an artifact you'll open again later, the same items appear at the bottom of
-it as cards. Say *bones on* and those cards get hand-drawn bone lettering for their titles;
-*bones off* puts the plain headers back.
+it as cards: a coloured header with a big bone and hand-drawn bone lettering, the ask, the
+why, and reply chips. Say *bones off* if you'd rather have plain text titles.
 
 ## Reusable tools and your data
 

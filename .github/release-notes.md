@@ -1,7 +1,7 @@
-## What's new in 1.0.1
+## What's new in 1.0.2
 
 - **To-do and question blocks.** Under `/cave-max`, what you need to do next and what Claude still needs from you come out as their own blocks at the end of the reply, one per item, at most three of each, and only when they are real. Artifacts you'll reopen later carry the same items as cards at the bottom.
-- **Bone lettering.** Card headers carry a big tilted bone. Say *bones on* and the card titles switch to hand-drawn bone lettering (`assets/title-todo.svg`, `assets/title-question.svg`); *bones off* puts the plain headers back.
+- **Bone headers by default.** Cards in artifacts get a coloured header strip (orange for TO-DO, beige for questions) with a big tilted bone and hand-drawn bone lettering for the title. Say *bones off* for plain text titles.
 - **Plays well with caveman.** The [caveman](https://github.com/JuliusBrussee/caveman) skill makes Claude terse; CaveMaxx decides when words are the wrong medium. Install both and they stay out of each other's way.
 - **RELEASING.md** explains how new versions are published, no terminal required.
 
