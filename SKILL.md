@@ -175,8 +175,8 @@ What keeps this useful rather than noisy:
 - **Chat is the home for these**, because chat is where the user answers. When the artifact is
   the whole answer and someone will open it later without the chat, mirror them at the bottom
   of the artifact as a "For you" section: one card per item, a header strip, the why line
-  underneath, and suggested replies as chips where the answer is obvious. Clean and modern,
-  like the rest of the artifact.
+  underneath, and two or three suggested replies as chips (tap to copy) whenever a short
+  answer is plausible. Clean and modern, like the rest of the artifact.
 - **The card header** is where the contrast lives, and it is on by default. Two colour
   schemes: TO-DO gets a burnt-orange strip (about `#b45309`) with white on it; QUESTION gets
   a warm beige strip (about `#e9dcc3`) with dark brown (about `#5b3a1e`) on it. Everything on
@@ -310,11 +310,14 @@ longer than 38 characters so phones don't scroll sideways:
 └──────────────────────────────────┘
 ```
 
-In an artifact, cave-wall cards built exactly like the `/cave-max` card header (big tilted
-bone, bone lettering, count), but in the cave palette: a dark charcoal strip with bone white
-on it for both kinds, a charcoal outline around the card, and the why line in the hand-drawn
-face. *Bones off* is ignored here; the wall is the wall. If a title file is missing, fall
-back to TO-DO or QUESTION in a hand-drawn display face.
+In an artifact, cave-wall cards: a rough charcoal outline with uneven corners, a header
+strip, the ask in the hand-drawn face, the why line under it, and two or three suggested
+replies as chips (tap to copy). The TO-DO strip is burnt orange (about `#b45309`); the HUH?
+strip is dark charcoal. Both carry the bone lettering from `assets/title-todo.svg` and
+`assets/title-question.svg` in bone white, pasted verbatim as described in the `/cave-max`
+section, about 40 to 48 px tall, with the "n of m" count as text at the right. No big bone
+on these cards; the lettering is the ornament. *Bones off* is ignored on the wall. If a title
+file is missing, fall back to TO-DO or QUESTION in a hand-drawn display face.
 
 ### What stays civilised
 
