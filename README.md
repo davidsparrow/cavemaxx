@@ -92,6 +92,23 @@ Not on every message. *"What does EBITDA mean?"* gets a sentence, even at max.
 - **Correct.** The numbers on screen are claims, so the maths is real and the assumptions are
   visible.
 
+## To-dos and questions you can't miss
+
+The thing you most need from a reply is usually buried in its last paragraph: what to do next,
+and what Claude still needs from you. Under `/cave-max` those come out as their own blocks at
+the end of the reply, one per item, at most three of each, and only when they are real:
+
+> **🦴 TO-DO 1 of 2**
+> Send me your current price list, or confirm that everyone pays $29 today.
+> *The simulator assumes $29. Legacy plans change the break-even.*
+
+> **🦴 QUESTION 1 of 1**
+> Does your 8% growth compound from referrals, or do you feed the pipeline yourself?
+> *This one assumption flips the answer between $29 and $49.*
+
+When the answer is an artifact you'll open again later, the same items appear at the bottom of
+it as cards.
+
 ## Reusable tools and your data
 
 When Claude builds something you will clearly use again (a P&L explorer, a prospect
@@ -109,6 +126,10 @@ point.
 Expert skills bring domain judgement; CaveMaxx brings the instinct to build. Pair it with,
 say, a database-setup skill and a checklist becomes a checklist app, a cost discussion becomes
 a cost simulator, an architecture explanation becomes a map.
+
+It also pairs well with [caveman](https://github.com/JuliusBrussee/caveman), the skill that
+makes Claude's prose terse. Caveman shortens what Claude says; CaveMaxx replaces it with
+something you can use when that is better. Install both and they stay out of each other's way.
 
 ## What CaveMaxx is not
 
@@ -136,6 +157,7 @@ INSTALL.md            install, verify, update, remove
 examples/             same prompt under each mode: pricing, comparison, diagram, reusable data,
                       plus one real generated pricing simulator
 evals/benchmark.md    the test prompt set and scorecard
+assets/               small SVG marks Claude inlines into generated cards
 commands/             /cave-off, /cave-default, /cave-max as plugin slash commands
 .claude-plugin/       plugin.json and marketplace.json, so the folder installs as a plugin
 scripts/package.sh    builds the release zip and .skill file

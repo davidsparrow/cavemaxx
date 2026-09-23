@@ -150,6 +150,35 @@ Whatever you build:
 - **No UI for UI's sake.** If you catch yourself wrapping a three-line answer in a card with a
   gradient, delete the card and send the three lines.
 
+### To-dos and questions
+
+What the user has to do next, and what you need from them, is the part of a reply people miss
+most when it sits in a closing paragraph. In `/cave-max`, pull those out into their own blocks
+at the end of the reply, one block per item, after the recommendation:
+
+> **🦴 TO-DO 1 of 2**
+> Send me your current price list, or confirm that everyone pays $29 today.
+> *The simulator assumes $29. Legacy plans change the break-even.*
+
+> **🦴 QUESTION 1 of 1**
+> Does your 8% growth compound from referrals, or do you feed the pipeline yourself?
+> *This one assumption flips the answer between $29 and $49.*
+
+What keeps this useful rather than noisy:
+
+- **Only when real.** Nothing the user must do and nothing you need means no blocks. Never
+  invent one to fill the slot, and never restate the recommendation as a to-do.
+- **At most three of each.** More than that is a plan, not a list; put it in the artifact.
+- **A to-do is an action they can take now**, phrased as one. **A question is something only
+  they can answer**, phrased so a one-line reply works.
+- The italic line is the why. One sentence, optional.
+- **Chat is the home for these**, because chat is where the user answers. When the artifact is
+  the whole answer and someone will open it later without the chat, mirror them at the bottom
+  of the artifact as a "For you" section: one card per item, a header strip reading TO-DO or
+  QUESTION with the small bone mark from `assets/bone.svg` inlined beside it (it uses
+  `currentColor`), the why line underneath, and suggested replies as chips where the answer
+  is obvious. Clean and modern, like the rest of the artifact.
+
 ### Reusable interfaces and private data
 
 Decide which of two things you are making.
@@ -183,6 +212,11 @@ Expert skills bring domain judgement; CaveMaxx brings the instinct to build. Whe
 is active and its output would land better as a checklist app, cost simulator, architecture
 map or explorer, build that. CaveMaxx should make other skills more useful, not compete with
 them.
+
+The [caveman](https://github.com/JuliusBrussee/caveman) skill makes prose terse; CaveMaxx
+decides when prose is the wrong medium. Installed together they don't conflict: let caveman own
+sentence style, and keep CaveMaxx's format decisions, to-do and question blocks, and cards
+intact.
 
 ## One more X
 
@@ -240,6 +274,28 @@ CAC → ROCK SPEND FIND TRIBE · LTV → ROCK TRIBE BRING BEFORE LEAVE · conver
 pipeline → MAMMOTH TRAIL · server → FIRE CAVE · database → MEMORY ROCK ·
 backup → SECOND MEMORY ROCK · API → CAVE TALK HOLE · bug → BAD SPIRIT · deploy → SEND HUNT.
 Invent more in the same spirit. Don't build a rigid dictionary.
+
+Fragments are fine. Drop articles, filler and hedges. Never soften a conclusion; a caveman
+does not say "it might be worth considering".
+
+### Marks on the wall
+
+To-dos and questions follow the `/cave-max` rules (only when real, at most three of each, chat
+is their home) but wear the mode. In chat, one box per item inside a code block, with no line
+longer than 38 characters so phones don't scroll sideways:
+
+```
+┌─ 𐂂 TO-DO 1 of 2 ────────────────┐
+│ BRING PRICE LIST. OR SAY:        │
+│ ALL TRIBE PAY $29.               │
+└──────────────────────────────────┘
+```
+
+In an artifact, cave-wall cards: charcoal outline, clay or ochre header strip, the title drawn
+in bone lettering. If `assets/title-todo.svg` and `assets/title-question.svg` exist in this
+skill, inline them as the headers; they are bone white, so set them on the dark strip.
+Otherwise set TO-DO and QUESTION in a hand-drawn display face with the bone mark from
+`assets/bone.svg` beside them.
 
 ### What stays civilised
 
