@@ -19,7 +19,7 @@ trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/cavemaxx" "$ROOT/dist"
 
 # Copy everything except .git, dist and OS cruft.
-(cd "$ROOT" && tar --exclude=.git --exclude=.github --exclude=dist --exclude='.DS_Store' --exclude='__pycache__' -cf - .) \
+(cd "$ROOT" && tar --exclude=.git --exclude=.github --exclude=dist --exclude=assets/source --exclude='.DS_Store' --exclude='__pycache__' -cf - .) \
   | (cd "$STAGE/cavemaxx" && tar -xf -)
 
 # Sanity checks: exactly one SKILL.md, frontmatter present.

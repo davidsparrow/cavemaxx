@@ -291,11 +291,15 @@ longer than 38 characters so phones don't scroll sideways:
 └──────────────────────────────────┘
 ```
 
-In an artifact, cave-wall cards: charcoal outline, clay or ochre header strip, the title drawn
-in bone lettering. If `assets/title-todo.svg` and `assets/title-question.svg` exist in this
-skill, inline them as the headers; they are bone white, so set them on the dark strip.
-Otherwise set TO-DO and QUESTION in a hand-drawn display face with the bone mark from
-`assets/bone.svg` beside them.
+In an artifact, cave-wall cards: charcoal outline, a dark charcoal header strip, and the title
+drawn in bone lettering. The lettering ships with the skill: `assets/title-todo.svg` reads
+TO-DO and `assets/title-question.svg` reads HUH?. Read each file once and paste its contents
+into the header verbatim (about 12 KB each; they carry clip paths that shape the letters, so
+don't trim them). They are filled with `currentColor`: set the header's `color` to bone white
+on the dark strip and give the SVG a height of about 40 to 56 px with width auto. Keep the
+"n of m" count as text beside the lettering, since HUH? doesn't say how many questions there
+are. If a title file is missing, set TO-DO or QUESTION in a hand-drawn display face with the
+bone mark from `assets/bone.svg` beside it.
 
 ### What stays civilised
 
