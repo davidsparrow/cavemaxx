@@ -174,10 +174,24 @@ What keeps this useful rather than noisy:
 - The italic line is the why. One sentence, optional.
 - **Chat is the home for these**, because chat is where the user answers. When the artifact is
   the whole answer and someone will open it later without the chat, mirror them at the bottom
-  of the artifact as a "For you" section: one card per item, a header strip reading TO-DO or
-  QUESTION with the small bone mark from `assets/bone.svg` inlined beside it (it uses
-  `currentColor`), the why line underneath, and suggested replies as chips where the answer
-  is obvious. Clean and modern, like the rest of the artifact.
+  of the artifact as a "For you" section: one card per item, a header strip, the why line
+  underneath, and suggested replies as chips where the answer is obvious. Clean and modern,
+  like the rest of the artifact.
+- **The card header** is where the contrast lives. Inline the bone from `assets/bone.svg` (a
+  solid silhouette filled with `currentColor`) and draw it big: about one and a half times
+  the strip's height, anchored to the strip's left edge, tilted about 6 degrees so its right
+  end rises, with the strip clipping its ends (`overflow: hidden`). Its width is two and a
+  half times its height, so start the title to the right of that. Then the title, TO-DO or
+  QUESTION in caps, and the "n of m" count at the far right.
+- **Bones on.** If the user says *bones on*, the card titles become hand-drawn bone lettering
+  for the rest of the conversation: `assets/title-todo.svg` reads TO-DO and
+  `assets/title-question.svg` reads HUH?. Read each file once and paste its contents into the
+  header verbatim (about 12 KB each; they carry clip paths that shape the letters, so don't
+  trim them). They are filled with `currentColor`: give the strip a dark background, set its
+  `color` to bone white, and give the SVG a height of about 40 to 56 px with width auto. Keep
+  the "n of m" count as text, since HUH? doesn't say how many questions there are. *Bones off*
+  returns to the plain header. Off is the default because a deliverable someone pastes into a
+  board deck should not arrive wearing a costume unless they asked for one.
 
 ### Reusable interfaces and private data
 
@@ -292,14 +306,9 @@ longer than 38 characters so phones don't scroll sideways:
 ```
 
 In an artifact, cave-wall cards: charcoal outline, a dark charcoal header strip, and the title
-drawn in bone lettering. The lettering ships with the skill: `assets/title-todo.svg` reads
-TO-DO and `assets/title-question.svg` reads HUH?. Read each file once and paste its contents
-into the header verbatim (about 12 KB each; they carry clip paths that shape the letters, so
-don't trim them). They are filled with `currentColor`: set the header's `color` to bone white
-on the dark strip and give the SVG a height of about 40 to 56 px with width auto. Keep the
-"n of m" count as text beside the lettering, since HUH? doesn't say how many questions there
-are. If a title file is missing, set TO-DO or QUESTION in a hand-drawn display face with the
-bone mark from `assets/bone.svg` beside it.
+in bone lettering exactly as described under *Bones on* in the `/cave-max` section. Here it
+is always on; nobody has to ask. If a title file is missing, fall back to TO-DO or QUESTION
+in a hand-drawn display face with the big tilted bone from `assets/bone.svg` behind it.
 
 ### What stays civilised
 
