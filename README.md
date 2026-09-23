@@ -5,7 +5,7 @@
 Claude sometimes talks when it should build. CaveMaxx changes that.
 
 CaveMaxx is a free, tiny Claude Skill (a *Skilllet*) that changes one thing: how readily
-Claude answers with something you can look at or use, a diagram, a calculator, a comparison
+Claude answers with a useful graphic, a diagram, a calculator, a comparison
 matrix, a dashboard, a mini-app, instead of another wall of text.
 
 It adds no framework, no hosting, no database, no API keys and no account. Claude already
