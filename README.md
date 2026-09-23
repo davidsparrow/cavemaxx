@@ -161,6 +161,7 @@ assets/               small SVG marks Claude inlines into generated cards
 commands/             /cave-off, /cave-default, /cave-max as plugin slash commands
 .claude-plugin/       plugin.json and marketplace.json, so the folder installs as a plugin
 scripts/package.sh    builds the release zip and .skill file
+.github/             release workflow: push a v* tag and the zip and .skill are attached to a GitHub release
 LICENSE               MIT
 ```
 

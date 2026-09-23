@@ -1,0 +1,48 @@
+# Builds the CaveMaxx package and publishes a GitHub release with the zip and
+# .skill attached. Runs when a v* tag is pushed, or on demand from the Actions
+# tab (Run workflow → enter the tag; it is created at the current commit if it
+# does not exist yet). The tag must match the version in .claude-plugin/plugin.json.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve tag
+        id: tag
+        run: echo "tag=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Check the tag matches plugin.json
+        run: |
+          v="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' .claude-plugin/plugin.json | head -1)"
+          if [ "v$v" != "${{ steps.tag.outputs.tag }}" ]; then
+            echo "plugin.json says v$v but the tag is ${{ steps.tag.outputs.tag }}. Bump one of them." >&2
+            exit 1
+          fi
+
+      - name: Build package
+        run: scripts/package.sh
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: CaveMaxx ${{ steps.tag.outputs.tag }}
+          body_path: .github/release-notes.md
+          files: |
+            dist/cavemaxx-*.zip
+            dist/cavemaxx.skill
